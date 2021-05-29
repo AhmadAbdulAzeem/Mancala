@@ -1,16 +1,20 @@
 
 PITS = 6
 TOTAL_PITS = 12
-BOARD_SIZE = 14  # 0->5 player1 pits, 6 player1 store, 7->12 player2 pits, 13 player2 store
+# 0->5 player1's pits, 6 player1's store, 7->12 player2's pits, 13 player2's store
+BOARD_SIZE = 14
 
 PLAYER1, PLAYER2 = 0, 1
 
-mancala_board = [0, 5, 5, 5, 5, 4, 0,\
-                 4, 4, 4, 4, 4, 4, 0]  # stones per pit
+mancala_board = [0, 5, 5, 5, 5, 4, 5,
+                 4, 4, 4, 4, 4, 4, 6]  # stones per pit
 
 # Difference between players store and oppponent store
+
+
 def heurestic1(player):
     return mancala_board[PITS + (PITS + 1) * player] - mancala_board[PITS + (PITS + 1) * (1 - player)]
+
 
 # Difference between the number of non-empty pits in player's row and opponent's row
 def heursitic2(player):
@@ -18,11 +22,15 @@ def heursitic2(player):
     limit1 = (PITS + 1) * player
     limit2 = (PITS + 1) * (1 - player)
     for i in range(PITS):
-        count = count + abs((int((not (not mancala_board[i + limit1]))) - int((not (not mancala_board[i + limit2])))))
+        count = count + \
+            abs((int((not (not mancala_board[i + limit1]))) -
+                 int((not (not mancala_board[i + limit2])))))
     return count
 
 # Number of stones on player's board with decreasing probability from 0 - 5
 # This heuristic gives more weight to the stones on the far left of the player's store
+
+
 def heuristic3(player):
     count = 0
     limit1 = (PITS + 1) * player
@@ -30,11 +38,14 @@ def heuristic3(player):
         count = count + 0.1 * (PITS - i) * (mancala_board[i + limit1])
     return count
 
+
 def evaluation(player):
     return heurestic1(player) + heuristic3(player)
 
+
 def cutOffTest(depth):
     return (depth == 0)
+
 
 def action(player, mancala_board):
     moves = []
@@ -157,3 +168,19 @@ def print_board():
 # is terminal state?(one side is empty)
 # no? is free turn? (one side plays again)
 # not free turn? switch player
+
+################################################################Algorithms#######################################################
+
+# AlphaBeta Algorithm
+def maxValue(player, depth, alpha, beta):
+    if (terminalTest()):
+        return utility(player)
+    if (cutOffTest(depth)):
+        return eval(player)
+    actions = action(player)
+    v = -128
+    v1 = int()
+    for a in actions:
+        isTurn = maxValue()
+
+
