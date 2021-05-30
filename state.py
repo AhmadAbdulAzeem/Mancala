@@ -5,8 +5,8 @@ class State:
         self.BOARD_SIZE = 14
         self.PLAYER1 = 0
         self.PLAYER2 = 1
-        self.mancala_board = [0, 0, 0, 0, 0, 0, 5,
-                              4, 4, 4, 4, 4, 4, 6]  # stones per pit
+        self.mancala_board = [4, 4, 4, 4, 4, 4, 0,
+                              4, 4, 4, 4, 4, 4, 0]  # stones per pit
 
     def heurestic1(self, player):
         return self.mancala_board[self.PITS + (self.PITS + 1) * player] - self.mancala_board[self.PITS + (self.PITS + 1) * (1 - player)]
@@ -50,6 +50,8 @@ class State:
 
     def Result(self, move, player):
         precomputed_limit = (self.PITS + 1) * player
+        print("move ", move, "move type ", type(move))
+        print("precomputed_limit ", precomputed_limit, "precomputed_limit type ", type(precomputed_limit))
         i = move + precomputed_limit
         stones = self.mancala_board[i]
         self.mancala_board[i] = 0
@@ -127,11 +129,3 @@ class State:
         print('P2 -->', self.mancala_board[7:])
         print('############################################')
 
-
-board = State()
-board.print_board()
-# print(board.action(0))
-# print(board.terminalTest())
-print(board.utility(0))
-# board.Result(0,1)
-# board.print_board()
