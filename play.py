@@ -1,7 +1,7 @@
 from state import State
 from search import Search
 
-CUTOFF_DEPTH_ALPHABETA = 8
+CUTOFF_DEPTH_ALPHABETA = 1
 WIN, LOSS, DRAW = 1, 2, 3
 RANDOM, HUMAN, MINMAX, ALPHABETA = 0, 1, 2, 3
 
@@ -17,6 +17,7 @@ def evaluate(playerStrategy, player, state):
     isFreeTurn = True
     # Display the board
     state.print_board()
+    flag = False
 
     while(isFreeTurn):
         actions = state.action(player)
@@ -35,8 +36,14 @@ def evaluate(playerStrategy, player, state):
                 state, player, CUTOFF_DEPTH_ALPHABETA)
 
         isFreeTurn = state.Result(move, player)
+
         # Display the updated board
-        state.print_board()
+        if(not flag):
+            flag = True
+        else:
+            state.print_board()
+            flag = False
+
 
         # Check if game is terminated
         if(state.terminalTest()):
@@ -44,6 +51,7 @@ def evaluate(playerStrategy, player, state):
 
         if(isFreeTurn):
             print("player   ", player+1, " gets another move")
+            state.print_board()
 
 
 def run_game(playerStrategy1, playerStrategy2):

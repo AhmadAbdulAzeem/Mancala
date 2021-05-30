@@ -77,7 +77,7 @@ class State:
                                                                                    precomputed_limit] + (self.mancala_board[self.TOTAL_PITS - i] + 1)
             # empty player's pit and opponent's pit
             self.mancala_board[self.TOTAL_PITS - i] = self.mancala_board[i] = 0
-            return False
+        return False
 
     # def utility(player, expectedPlayer):
     #     difference = 0
@@ -121,30 +121,30 @@ class State:
             return True, self.PLAYER1
         return False
 
-    def print_board(self):
-        # print('############################################')
-        # self.
-        # print('P1 -->', self.mancala_board[0:7])
-        # temp = self.mancala_board[7:]
-        # temp.reverse()
-        # print('P2 -->', temp[0:7])
-        # print('############################################')
+    # def print_board(self):
+    #     # print('############################################')
+    #     # self.
+    #     # print('P1 -->', self.mancala_board[0:7])
+    #     # temp = self.mancala_board[7:]
+    #     # temp.reverse()
+    #     # print('P2 -->', temp[0:7])
+    #     # print('############################################')
 
-        # print("\n\nCurrent board contents:\n\n")
-        # print("       6    5    4     3    2    1  ")
-        # print("\n    --------------------------------    \n")
-        # print(" ", int(self.mancala_board[self.PITS + (self.PITS + 1)]), '|')
-        # for i in range(self.PITS):
-        #     print(" ", int(self.mancala_board[i]), "|")
-        #     if (i == 2):
-        #         print("|")
-        temp = self.mancala_board
-        temp.reverse()
-        print("*******************************")
-        print("***   WELCOME TO MANCALA   ****")
-        print("*******************************")
-        print('\nPocket # :     6  5  4  3  2  1')
-        print('P1 --> ', '  ', self.mancala_board[0:7])
-        print('P2 --> ', '  ', temp[1:7], temp[0])
+    #     # print("\n\nCurrent board contents:\n\n")
+    #     # print("       6    5    4     3    2    1  ")
+    #     # print("\n    --------------------------------    \n")
+    #     # print(" ", int(self.mancala_board[self.PITS + (self.PITS + 1)]), '|')
+    #     # for i in range(self.PITS):
+    #     #     print(" ", int(self.mancala_board[i]), "|")
+    #     #     if (i == 2):
+    #     #         print("|")
+
+    def print_board(self):
+        print('############################################')
+        new= self.mancala_board[7:]
+        print('P2 -->', new[::-1])
+        print('P1 -->',self.mancala_board[0:7] )
+        print('############################################')
+        
 
 

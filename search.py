@@ -35,7 +35,7 @@ class Search:
             x, y = state.utility(player)
             return x
         if (state.cutOffTest(depth)):
-            return state.eval(player)
+            return state.evaluation(player)
         opponent = 1 - player
         actions = state.action(opponent)
         v = 128
