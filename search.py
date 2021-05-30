@@ -56,7 +56,7 @@ class Search:
     
     def alphabetaDecision(self, state, player, depth):
         actions = state.action(player)
-        alphabetaNodes = 1
+        alphabetaNodes = 1  
         alpha = -128
         beta = 126
         v = -128
@@ -73,3 +73,4 @@ class Search:
                 v = v1
                 m = action
             alpha = max(alpha, v)
+        return m
