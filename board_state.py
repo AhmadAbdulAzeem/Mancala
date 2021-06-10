@@ -23,12 +23,12 @@ class Board:
         return count_heuristic1 + count_heuristic2
 
 
-    # This function returns a list of pit numbers (0-index) having at least one stone
-    def action(self, player):
+    # return a list of indeces of non empty pits
+    def getFilledPitsIndex(self, player):
         moves = []
-        precomputed_limit = (self.PITS + 1) * player
-        for i in range(self.PITS):
-            if (self.mancala_board[i + precomputed_limit]):
+        limit = 7 * player
+        for i in range(6):
+            if(self.mancala_board[i+limit]):
                 moves.append(i)
         return moves
 
@@ -82,23 +82,11 @@ class Board:
         else:
             return abs(diff), 2
 
-    # check if game is over or not
-    def terminalTest(self):
-        count = 0
-        playerCounter1, playerCounter2 = 0, 0
-        for pitValue in self.mancala_board:
-            if (count == 6 or count == 13):
-                continue
-            if (count < 7 and pitValue == 0):
-                playerCounter1 = playerCounter1 + 1
-            if (count > 7 and pitValue == 0):
-                playerCounter2 = playerCounter2 + 1
-            count = count + 1
-        if (playerCounter1 == 6):
-            return True, self.PLAYER2
-        elif (playerCounter2 == 6):
-            return True, self.PLAYER1
-        return False
+    # The game is over when one player’s pits are completely empty.
+    def isGameOver(self):
+        if (any(self.mancala_board[0:6]) != 0 and any(self.mancala_board[7:13]) != 0):
+            return False
+        return True
 
     def print_board(self):
         table = Table()

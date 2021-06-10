@@ -28,7 +28,7 @@ class Game:
         if (Difficulity == 3):
             CUTOFF_DEPTH_ALPHABETA = 10
         while(freeMove):
-            actions = board.action(player)
+            actions = board.getFilledPitsIndex(player)
             if(playerStrategy == self.HUMAN):
                 while(1):
                     pit_to_move = int(input("Enter your move:   "))
@@ -40,7 +40,7 @@ class Game:
             elif(playerStrategy == self.ALPHABETA):
                 print("Alphabeta Running.........")
                 search = Algorithm()
-                pit_to_move = search.alphabetaDecision(
+                pit_to_move = search.alphabetaAlgorithm(
                     board, player, CUTOFF_DEPTH_ALPHABETA,mode)
 
             freeMove = board.Result(pit_to_move, player,mode)
@@ -53,7 +53,7 @@ class Game:
                 flag = False
 
             # Check if game is terminated
-            if(board.terminalTest()):
+            if(board.isGameOver()):
                 return True
 
             if(freeMove):
