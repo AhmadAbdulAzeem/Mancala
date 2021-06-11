@@ -4,72 +4,125 @@ from board_state import Board
 
 class Algorithm:
     def __init__(self):
-        self.minMaxNodes = 0
-        self.alphaBetaNodes = 0
+        self.infinity = 200
+
+    # Calculate Max Value
+    def calcMaxValue(self, board_state, player, depth, alpha, beta,mode):
+
+        # check if the game is over or not
+        if (board_state.isGameOver()): 
+            score, y = board_state.getScore(player) # get Score 
+            return score
+            
+        # get estimated score    
+        if (depth==0):
+            return board_state.evaluation(player)
+        
+        #get indix of All Filled PITS 
+        filled_pits = board_state.getFilledPitsIndex(player) 
+
+        maxValue = -self.infinity   # temp alpha initial value
+
+        for pit_index in filled_pits:
+
+            next_board_state = copy.deepcopy(board_state)
+
+            # Make the actual Move 
+            is_freeTurn = next_board_state.Move(pit_index, player,mode)
+
+            if (is_freeTurn): 
+                # Human --> Maximizer turn then calculate the MaxValue
+                value = self.calcMaxValue(next_board_state, player, depth, alpha, beta,mode)
+            else:
+                # Opponent --> Minimizer turn then calculate the MinValue
+                value = self.calcMinValue(next_board_state, player, depth - 1, alpha, beta,mode)
+
+            # compare the maxValue with last claculated Value and get The Max
+            maxValue = max(maxValue, value)
+
+            # CuttOff Condition
+            if (maxValue >= beta):
+                return maxValue
+
+            # Compare and Update Alpha with the New MaxValue
+            alpha = max(alpha, maxValue)
+
+        return maxValue
+
+    # Calculate Min Value
+    def calcMinValue(self, board_state, player, depth, alpha, beta,mode):
+
+        # check if the game is over or not
+        if (board_state.isGameOver()): 
+            score, y = board_state.getScore(player) # get Score 
+            return score
+        # get estimated score    
+        if (depth==0):
+            return board_state.evaluation(player)
+
+        opponent = 1 - player
+
+        #get indix of All Filled PITS 
+        filled_pits = board_state.getFilledPitsIndex(opponent)
+
+        # temp Beta initial value
+        minValue = self.infinity
+
+        for pit_index in filled_pits:
+
+            next_board_state = copy.deepcopy(board_state)
+
+            # Make the actual Move 
+            is_freeTurn = next_board_state.Move(pit_index, opponent,mode)
+            if (is_freeTurn):
+                # Opponent --> Minimizer turn then calculate the MinValue
+                value = self.calcMinValue(next_board_state, player, depth, alpha, beta,mode)
+            else:
+                # Human --> Maximizer turn then calculate the MaxValue
+                value = self.calcMaxValue(next_board_state, player, depth - 1, alpha, beta,mode)
+
+            # Compare the minValue with last claculated Value and get The Min    
+            minValue = min(minValue, value)
+
+            # CuttOff Condition
+            if (minValue <= alpha):
+                return minValue
+
+            # Compare and Update Beta with the New minValue
+            beta = min(beta, minValue)
+
+        return minValue
 
     # AlphaBeta algorithm
-    def calcMaxValue(self, state, player, depth, alpha, beta,mode):
-        if (state.isGameOver()):
-            x, y = state.getScore(player)
-            return x
-        if (depth==0):
-            return state.evaluation(player)
-        actions = state.getFilledPitsIndex(player)
-        v = -200#alpha
-        v1 = int()
-        for action in actions:
-            next_state = copy.deepcopy(state)
-            is_turn = next_state.Result(action, player,mode)
-            if (is_turn):
-                v1 = self.calcMaxValue(next_state, player, depth, alpha, beta,mode)
-            else:
-                v1 = self.calcMinValue(next_state, player, depth - 1, alpha, beta,mode)
-            v = max(v, v1)
-            if (v >= beta):
-                return v
-            alpha = max(alpha, v)
-        return v
-
-    def calcMinValue(self, state, player, depth, alpha, beta,mode):
-        if (state.isGameOver()):
-            x, y = state.getScore(player)
-            return x
-        if (depth==0):
-            return state.evaluation(player)
-        opponent = 1 - player
-        actions = state.getFilledPitsIndex(opponent)
-        v = 200
-        v1 = int()
-        for action in actions:
-            next_state = copy.deepcopy(state)
-            is_turn = next_state.Result(action, opponent,mode)
-            if (is_turn):
-                v1 = self.calcMinValue(next_state, player, depth, alpha, beta,mode)
-            else:
-                v1 = self.calcMaxValue(next_state, player, depth - 1, alpha, beta,mode)
-            v = min(v, v1)
-            if (v <= alpha):
-                return v
-            beta = min(beta, v)
-        return v
-
     def alphabetaAlgorithm(self, state, player, depth,mode):
-        actions = state.getFilledPitsIndex(player)
-        alphabetaNodes = 1
-        alpha = -200
-        beta = 200
-        v = -200
-        v1 = int()
-        m = -1
-        for action in actions:
+
+        # get indix of All Filled PITS 
+        filled_pits = state.getFilledPitsIndex(player)
+
+        # Initialization of ALPHA , BETA 
+        alpha = -self.infinity
+        beta = self.infinity
+        bestValue = -self.infinity
+
+        for pit_index in filled_pits:
+
             next_state = copy.deepcopy(state)
-            is_turn = next_state.Result(action, player,mode)
-            if (is_turn):
-                v1 = self.calcMaxValue(next_state, player, depth, alpha, beta,mode)
+
+            # Make the actual Move 
+            is_freeTurn = next_state.Move(pit_index, player,mode)
+            if (is_freeTurn):
+                # Human --> Maximizer turn then calculate the MaxValue
+                value = self.calcMaxValue(next_state, player, depth, alpha, beta,mode)
             else:
-                v1 = self.calcMinValue(next_state, player, depth - 1, alpha, beta,mode)
-            if (v1 > v):
-                v = v1
-                m = action
-            alpha = max(alpha, v)
-        return m
+                # Opponent --> Minimizer turn then calculate the MinValue
+                value = self.calcMinValue(next_state, player, depth - 1, alpha, beta,mode)
+            
+            # CuttOff Condition
+            if (value > bestValue):
+                bestValue = value
+                pit_to_move = pit_index
+            
+            # Compare and Update Alpha with the New MaxValue
+            alpha = max(alpha, value)
+            
+        return pit_to_move 

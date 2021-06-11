@@ -15,35 +15,39 @@ class Game:
         self.PLAYER1 = 0
         self.PLAYER2 = 1
 
-    def play(self, playerStrategy, player, board,Difficulity,mode):
+    def getAlphaBetaDepth(self, difficulity):
+        if(difficulity == 1):
+            depth = 1
+        elif (difficulity == 2):
+            depth = 4
+        elif (difficulity == 3):
+            depth = 9
+        return depth
+
+    def play(self, playerStrategy, player, board, difficulity, mode):
         pit_to_move= int()
         freeMove = True
         # Display the board
         board.print_board()
         flag = False
-        if(Difficulity==1):
-            CUTOFF_DEPTH_ALPHABETA=1
-        if (Difficulity == 2):
-            CUTOFF_DEPTH_ALPHABETA = 4
-        if (Difficulity == 3):
-            CUTOFF_DEPTH_ALPHABETA = 10
+        depth = self.getAlphaBetaDepth(difficulity)
+
         while(freeMove):
             actions = board.getFilledPitsIndex(player)
             if(playerStrategy == self.HUMAN):
                 while(1):
-                    pit_to_move = int(input("Enter your move:   "))
+                    pit_to_move = int(input("Select PIT Number to Move:   "))
                     pit_to_move = pit_to_move - 1
                     if(pit_to_move in actions):
                         break
                     else:
-                        print("You entered wrong move")
+                        print("You Entered Empty PIT Number to Move !")
             elif(playerStrategy == self.ALPHABETA):
                 print("Alphabeta Running.........")
                 search = Algorithm()
-                pit_to_move = search.alphabetaAlgorithm(
-                    board, player, CUTOFF_DEPTH_ALPHABETA,mode)
+                pit_to_move = search.alphabetaAlgorithm(board, player, depth, mode)
 
-            freeMove = board.Result(pit_to_move, player,mode)
+            freeMove = board.Move(pit_to_move, player,mode)
 
             # Display the updated board
             if(not flag):
@@ -67,20 +71,20 @@ class Game:
 
         while(1):
             currentPlayer = player
-            gameOver = self.play(
-                playerStrategy1, currentPlayer, board,Difficulity,mode)
+            gameOver = self.play(playerStrategy1, currentPlayer, board, Difficulity, mode)
 
             if(gameOver):
                 break
 
             currentPlayer = not(player)
-            gameOver = self.play(
-                playerStrategy2, currentPlayer, board,Difficulity,mode)
+            gameOver = self.play(playerStrategy2, currentPlayer, board, Difficulity, mode)
 
             if(gameOver):
                 break
 
         outcome, winner = board.getScore(currentPlayer)
+        board.print_board()
+        
         if(winner == 0):
             print("HUMAN wins..........")
         elif(winner == 1):
